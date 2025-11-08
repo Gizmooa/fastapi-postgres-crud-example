@@ -82,7 +82,9 @@ class NotesRepository:
             logger.error(f"Error fetching note {note_id}: {e}")
             raise
 
-    def update(self, note_id: int, note_data: NoteFullUpdate | NoteUpdate) -> NoteResponse | None:
+    def update(
+        self, note_id: int, note_data: NoteFullUpdate | NoteUpdate
+    ) -> NoteResponse | None:
         """Update an existing note.
 
         Args:
