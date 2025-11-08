@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from app.config.db_settings import get_db
 from app.core.constants import DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE
 from app.repositories.notes_repository import NotesRepository
-from app.schemas.note import NoteCreate, NoteUpdate, NoteResponse
+from app.schemas.note import NoteCreate, NoteUpdate, NoteFullUpdate, NoteResponse
 
-router = APIRouter(prefix="/notes", tags=["notes", "v1"])
+router = APIRouter(prefix="/notes", tags=["notes"])
 
 
 def get_notes_repo(db: Session = Depends(get_db)) -> NotesRepository:
@@ -75,14 +75,14 @@ def get_note(
 )
 def update_note(
     note_id: int,
-    note_data: NoteCreate,
+    note_data: NoteFullUpdate,
     repo: NotesRepository = Depends(get_notes_repo),
 ) -> NoteResponse:
     """Update a note with full replacement (all fields required).
 
     Args:
         note_id: Note ID to update
-        note_data: Full note data (all fields required)
+        note_data: Full note data (all fields required, no defaults)
         repo: Notes repository dependency
 
     Returns:

@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime
 from pydantic import ValidationError
 
-from app.schemas.note import NoteCreate, NoteUpdate, NoteResponse
+from app.schemas.note import NoteCreate, NoteUpdate, NoteFullUpdate, NoteResponse
 
 
 @pytest.mark.unit
@@ -36,6 +36,47 @@ class TestNoteCreate:
         long_content = "a" * 10001
         with pytest.raises(ValidationError):
             NoteCreate(title="Test", content=long_content)
+
+
+@pytest.mark.unit
+class TestNoteFullUpdate:
+    def test_full_update_valid(self):
+        update = NoteFullUpdate(title="New Title", content="New Content")
+
+        assert update.title == "New Title"
+        assert update.content == "New Content"
+
+    def test_full_update_missing_title(self):
+        """Test that title is required."""
+        with pytest.raises(ValidationError):
+            NoteFullUpdate(content="New Content")
+
+    def test_full_update_missing_content(self):
+        """Test that content is required."""
+        with pytest.raises(ValidationError):
+            NoteFullUpdate(title="New Title")
+
+    def test_full_update_missing_all_fields(self):
+        """Test that all fields are required."""
+        with pytest.raises(ValidationError):
+            NoteFullUpdate()
+
+    def test_full_update_empty_title(self):
+        """Test that empty title is invalid."""
+        with pytest.raises(ValidationError):
+            NoteFullUpdate(title="", content="Content")
+
+    def test_full_update_title_too_long(self):
+        """Test that title length is validated."""
+        long_title = "a" * 256
+        with pytest.raises(ValidationError):
+            NoteFullUpdate(title=long_title, content="Content")
+
+    def test_full_update_content_too_long(self):
+        """Test that content length is validated."""
+        long_content = "a" * 10001
+        with pytest.raises(ValidationError):
+            NoteFullUpdate(title="Title", content=long_content)
 
 
 @pytest.mark.unit

@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.core.constants import DEFAULT_PAGE_SIZE
 from app.repositories.models.note import Note
-from app.schemas.note import NoteCreate, NoteUpdate, NoteResponse
+from app.schemas.note import NoteCreate, NoteUpdate, NoteFullUpdate, NoteResponse
 
 logger = logging.getLogger(__name__)
 
@@ -82,12 +82,12 @@ class NotesRepository:
             logger.error(f"Error fetching note {note_id}: {e}")
             raise
 
-    def update(self, note_id: int, note_data: NoteCreate | NoteUpdate) -> NoteResponse | None:
+    def update(self, note_id: int, note_data: NoteFullUpdate | NoteUpdate) -> NoteResponse | None:
         """Update an existing note.
 
         Args:
             note_id: Note ID to update
-            note_data: Note update data (NoteCreate for full update, NoteUpdate for partial)
+            note_data: Note update data (NoteFullUpdate for full update, NoteUpdate for partial)
 
         Returns:
             Updated note response if found, None otherwise
@@ -101,10 +101,8 @@ class NotesRepository:
             if not note:
                 return None
 
-            # exclude_unset=True means only provided fields are updated
-            # For NoteCreate (full update), all fields are set, so all will be updated
-            # For NoteUpdate (partial), only provided fields will be updated
-            update_data = note_data.model_dump(exclude_unset=True)
+            exclude_unset = isinstance(note_data, NoteUpdate)
+            update_data = note_data.model_dump(exclude_unset=exclude_unset)
             for field, value in update_data.items():
                 setattr(note, field, value)
 

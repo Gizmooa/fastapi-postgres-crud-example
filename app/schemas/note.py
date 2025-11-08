@@ -20,6 +20,24 @@ class NoteCreate(BaseModel):
     )
 
 
+class NoteFullUpdate(BaseModel):
+    """Schema for full update of an existing note (all fields required)."""
+
+    title: str = Field(
+        ...,
+        min_length=1,
+        max_length=255,
+        description="Note title",
+        examples=["Updated Note Title"],
+    )
+    content: str = Field(
+        ...,
+        max_length=10000,
+        description="Note content",
+        examples=["Updated note content"],
+    )
+
+
 class NoteUpdate(BaseModel):
     """Schema for updating an existing note (partial update)."""
 

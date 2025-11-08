@@ -8,7 +8,10 @@ from app.config.db_settings import engine, Base
 from app.config.env_settings import settings
 from app.api import root, health
 from app.api.v1 import router as v1_router
-from app.api.exceptions import sqlalchemy_exception_handler, general_exception_handler
+from app.api.exceptions import (
+    sqlalchemy_exception_handler,
+    general_exception_handler,
+)
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -19,10 +22,22 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Starting application...")
-    if settings.DEBUG:
-        Base.metadata.create_all(bind=engine)
-        logger.info("Database tables created (development mode)")
+    logger.info(f"Starting application in {settings.ENVIRONMENT} environment...")
+    # In development mode, drop and recreate tables for a clean slate
+    if settings.ENVIRONMENT == "development":
+        try:
+            Base.metadata.drop_all(bind=engine)
+            logger.info("Dropped existing tables (development mode)")
+        except Exception as e:
+            logger.warning(f"Could not drop tables: {e}")
+
+        try:
+            Base.metadata.create_all(bind=engine)
+            logger.info("Database tables created (development mode)")
+        except Exception as e:
+            logger.warning(f"Could not create tables: {e}")
+    else:
+        logger.info("Production mode")
     yield
     logger.info("Shutting down application...")
 
@@ -36,7 +51,6 @@ app: FastAPI = FastAPI(
     redoc_url="/redoc",
     openapi_tags=[
         {"name": "root", "description": "API information and root endpoint"},
-        {"name": "v1", "description": "API version 1 endpoints"},
         {"name": "health", "description": "Health check endpoints"},
         {"name": "notes", "description": "Operations with notes (CRUD)"},
     ],

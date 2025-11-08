@@ -36,6 +36,12 @@ class TestCreateNote:
         )
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        data = response.json()
+        assert "detail" in data
+        assert isinstance(data["detail"], list)
+        assert len(data["detail"]) > 0
+        error_locs = [err.get("loc", []) for err in data["detail"]]
+        assert any("title" in str(loc).lower() for loc in error_locs)
 
     def test_create_note_empty_title(self, client: TestClient):
         response = client.post(f"{API_VERSION_PREFIX}/notes/", json={"title": ""})
@@ -170,14 +176,28 @@ class TestUpdateNote:
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
+    def test_update_note_requires_all_fields(self, client: TestClient, sample_note):
+        update_data = {"title": "Updated Title Only"}
+        response = client.put(
+            f"{API_VERSION_PREFIX}/notes/{sample_note.id}", json=update_data
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        data = response.json()
+        assert "detail" in data
+        assert isinstance(data["detail"], list)
+        assert len(data["detail"]) > 0
+        error_locs = [err.get("loc", []) for err in data["detail"]]
+        assert any("content" in str(loc).lower() for loc in error_locs)
+
     def test_update_note_not_found(self, client: TestClient):
-        update_data = {"title": "New Title"}
+        update_data = {"title": "New Title", "content": "New Content"}
         response = client.put(f"{API_VERSION_PREFIX}/notes/999", json=update_data)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_update_note_invalid_title(self, client: TestClient, sample_note):
-        update_data = {"title": ""}
+        update_data = {"title": "", "content": "Some content"}
         response = client.put(
             f"{API_VERSION_PREFIX}/notes/{sample_note.id}", json=update_data
         )

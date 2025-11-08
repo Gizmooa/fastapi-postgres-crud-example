@@ -16,7 +16,11 @@ class Settings(BaseSettings):
     DB_PORT: int = Field(default=5432, ge=1, le=65535, description="Database port")
 
     # Application settings
-    DEBUG: bool = Field(default=False, description="Debug mode")
+    DEBUG: bool = Field(default=False, description="Debug mode (verbose logging, SQL echo)")
+    ENVIRONMENT: str = Field(
+        default="development",
+        description="Environment: development, staging, or production",
+    )
     LOG_LEVEL: str = Field(default="INFO", description="Logging level")
 
     model_config = SettingsConfigDict(
