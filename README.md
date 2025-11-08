@@ -43,7 +43,6 @@ A simple CRUD application for Notetaking. It is used for experimenting with diff
 
    ```bash
    cp .env.example .env
-   # Edit .env with your database credentials
    ```
 
 4. Run with Docker Compose:
