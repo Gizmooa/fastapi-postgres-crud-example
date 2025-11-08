@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.repositories.notes_repository import NotesRepository

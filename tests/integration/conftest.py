@@ -6,7 +6,6 @@ from sqlalchemy.pool import StaticPool
 from fastapi.testclient import TestClient
 
 from app.config.db_settings import Base, get_db
-from app.core.constants import API_VERSION_PREFIX
 from app.main import app
 from app.repositories.models.note import Note
 

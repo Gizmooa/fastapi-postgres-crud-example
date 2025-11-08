@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, patch
 import pytest
 from sqlalchemy.exc import SQLAlchemyError
 

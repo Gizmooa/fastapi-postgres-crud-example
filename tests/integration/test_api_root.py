@@ -2,8 +2,6 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.core.constants import API_VERSION_PREFIX
-from app.main import app
 
 
 @pytest.mark.integration
