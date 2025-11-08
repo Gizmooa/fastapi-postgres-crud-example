@@ -32,7 +32,7 @@ jobs:
           echo "DB_HOST=localhost" >> $GITHUB_ENV
           echo "DB_PORT=5432" >> $GITHUB_ENV
           echo "DEBUG=True" >> $GITHUB_ENV
-          echo "ENVIRONMENT=test" >> $GITHUB_ENV
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
           echo "CI=true" >> $GITHUB_ENV
 
       - name: Check code formatting
