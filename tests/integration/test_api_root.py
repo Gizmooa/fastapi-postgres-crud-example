@@ -3,7 +3,6 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 
-
 @pytest.mark.integration
 class TestRootEndpoint:
     def test_root_endpoint_success(self, client: TestClient):
