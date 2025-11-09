@@ -77,7 +77,7 @@ A simple CRUD application for Notetaking. It is used for experimenting with diff
 
 ```
 app/
-├── api/           # API routes and endpoints
+├── api/          # API routes and endpoints
 │   ├── v1/       # Version 1 API
 │   ├── health.py # Health check endpoints
 │   └── root.py   # Root endpoint
